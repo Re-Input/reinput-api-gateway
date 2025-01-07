@@ -1,10 +1,92 @@
+server:
+  port: 8000
+
 spring:
   application:
     name: reinput-api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: member-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/member/**
+
+        - id: auth-routes
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        - id: auth-swagger
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/member/swagger-ui/**, /member/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        - id: insight-service
+          uri: lb://INSIGHT-SERVICE
+          predicates:
+            - Path=/insight/**
+
+        - id: insight-swagger
+          uri: lb://INSIGHT-SERVICE
+          predicates:
+            - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        - id: reminder-service
+          uri: lb://REMINDER-SERVICE
+          predicates:
+            - Path=/reminder/**
+
+        - id: reminder-swagger
+          uri: lb://REMINDER-SERVICE
+          predicates:
+            - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        - id: folder-service
+          uri: lb://FOLDER-SERVICE
+          predicates:
+            - Path=/folder/**
+          filters:
+            - StripPrefix=1
+
+        - id: folder-swagger
+          uri: lb://FOLDER-SERVICE
+          predicates:
+            - Path=/folder-service/swagger-ui/**, /folder-service/v3/api-docs/**
+          filters:
+            - StripPrefix=1
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-        defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
