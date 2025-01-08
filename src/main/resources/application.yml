@@ -1,10 +1,90 @@
+server:
+  port: 8000
+
 spring:
   application:
     name: reinput-api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: member-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/member/**
+
+        - id: auth-routes
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        - id: auth-swagger
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/member/swagger-ui/**, /member/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        - id: content-service
+          uri: lb://CONTENT-SERVICE
+          predicates:
+            - Path=/insight/**
+
+        - id: content-swagger
+          uri: lb://CONTENT-SERVICE
+          predicates:
+            - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/reminder/**
+
+        - id: notification-swagger
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        - id: workspace-service
+          uri: lb://WORKSPACE-SERVICE
+          predicates:
+            - Path=/folder/**
+
+        - id: workspace-swagger
+          uri: lb://WORKSPACE-SERVICE
+          predicates:
+            - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**
+          filters:
+            - StripPrefix=1
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-        defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
