@@ -38,41 +38,39 @@ spring:
           filters:
             - StripPrefix=1
 
-        - id: insight-service
-          uri: lb://INSIGHT-SERVICE
+        - id: content-service
+          uri: lb://CONTENT-SERVICE
           predicates:
             - Path=/insight/**
 
-        - id: insight-swagger
-          uri: lb://INSIGHT-SERVICE
+        - id: content-swagger
+          uri: lb://CONTENT-SERVICE
           predicates:
             - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**
           filters:
             - StripPrefix=1
 
-        - id: reminder-service
-          uri: lb://REMINDER-SERVICE
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
           predicates:
             - Path=/reminder/**
 
-        - id: reminder-swagger
-          uri: lb://REMINDER-SERVICE
+        - id: notification-swagger
+          uri: lb://NOTIFICATION-SERVICE
           predicates:
             - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**
           filters:
             - StripPrefix=1
 
-        - id: folder-service
-          uri: lb://FOLDER-SERVICE
+        - id: workspace-service
+          uri: lb://WORKSPACE-SERVICE
           predicates:
             - Path=/folder/**
-          filters:
-            - StripPrefix=1
 
-        - id: folder-swagger
-          uri: lb://FOLDER-SERVICE
+        - id: workspace-swagger
+          uri: lb://WORKSPACE-SERVICE
           predicates:
-            - Path=/folder-service/swagger-ui/**, /folder-service/v3/api-docs/**
+            - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**
           filters:
             - StripPrefix=1
 
