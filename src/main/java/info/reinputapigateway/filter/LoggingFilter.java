@@ -1,6 +1,5 @@
 package info.reinputapigateway.filter;
 
-import jakarta.servlet.ServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

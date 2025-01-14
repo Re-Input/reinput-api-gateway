@@ -63,9 +63,9 @@ spring:
             - StripPrefix=1
 
         - id: workspace-service
-          uri: lb://WORKSPACE-SERVICE
+          uri: lb://reinput-workspace-service
           predicates:
-            - Path=/folder/**
+            - Path=/workspace/**
 
         - id: workspace-swagger
           uri: lb://WORKSPACE-SERVICE
