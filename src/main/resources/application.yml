@@ -74,7 +74,7 @@ spring:
             - StripPrefix=1
 
         - id: workspace-service
-          uri: lb://WORKSPACE-SERVICE
+          uri: lb://reinput-workspace-service
           predicates:
             - Path=/folder/**
           filters:
