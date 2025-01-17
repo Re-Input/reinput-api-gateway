@@ -15,22 +15,34 @@ import java.util.UUID;
 @Slf4j
 public class LoggingFilter implements GlobalFilter, Ordered {
 
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain){
-        String traceId = UUID.randomUUID().toString();
-        long startTime = System.currentTimeMillis();
+    private static final String TRACE_ID = "X-Trace-Id";
+    private static final String START_TIME = "startTime";
 
-        ServerHttpRequest request = exchange.getRequest();
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String traceId = UUID.randomUUID().toString();
+        exchange.getAttributes().put(START_TIME, System.currentTimeMillis());
+
+        ServerHttpRequest request = exchange.getRequest()
+                .mutate()
+                .header(TRACE_ID, traceId)
+                .build();
+
         log.info("[{}] Request: {} {}", traceId, request.getMethod(), request.getURI().getRawPath());
 
-        return chain.filter(exchange).then(Mono.fromRunnable(()->{
-            long endTime = System.currentTimeMillis() - startTime;
-            log.info("[{}] Response: {} in {}ms", traceId, exchange.getResponse().getStatusCode(), endTime-startTime);
-        }));
+        return chain.filter(exchange.mutate().request(request).build())
+                .then(Mono.fromRunnable(() -> {
+                    Long startTime = exchange.getAttribute(START_TIME);
+                    long duration = startTime != null ? System.currentTimeMillis() - startTime : 0;
+                    log.info("[{}] Response: {} in {}ms",
+                            traceId,
+                            exchange.getResponse().getStatusCode(),
+                            duration);
+                }));
     }
 
     @Override
-    public int getOrder(){
+    public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
     }
 }
