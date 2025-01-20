@@ -1,0 +1,59 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: public.ecr.aws/e7w4k6e4
+  IMAGE_NAME: reinput/api-gateway-service
+  CONTAINER_NAME: api-gateway-service
+  CONTAINER_PORT: 8000
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/reinput-key.pem
+          chmod 600 ~/.ssh/reinput-key.pem
+          cat >>~/.ssh/config <<END
+          Host ec2
+            HostName ${{ secrets.EC2_HOST }}
+            User ${{ secrets.EC2_USERNAME }}
+            IdentityFile ~/.ssh/reinput-key.pem
+            StrictHostKeyChecking no
+          END
+
+      - name: Deploy to EC2
+        run: |
+          ssh ec2 '
+            # ECR 로그인
+            aws ecr-public get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+
+            # 기존 컨테이너 확인 및 중지
+            if docker ps -a | grep -q ${{ env.CONTAINER_NAME }}; then
+              docker stop ${{ env.CONTAINER_NAME }}
+              docker rm ${{ env.CONTAINER_NAME }}
+            fi
+
+            # 새 이미지 풀 및 실행
+            docker pull ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            docker run -d \
+              --name ${{ env.CONTAINER_NAME }} \
+              --network reinput-network \
+              -p ${{ env.CONTAINER_PORT }}:${{ env.CONTAINER_PORT }} \
+              ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          
+            # 컨테이너 실행 확인
+            docker ps | grep ${{ env.CONTAINER_NAME }}
+          '
