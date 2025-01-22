@@ -26,21 +26,29 @@ spring:
           uri: lb://REINPUT-AUTH-SERVICE
           predicates:
             - Path=/member/swagger-ui/**, /member/v3/api-docs/**, /member/swagger-resources/**, /member/swagger-config/**, /member/webjars/**, /member/swagger-ui.html
+          filters:
+            - RewritePath=/member/(?<remaining>.*), /$\{remaining}
 
         - id: content-swagger
           uri: lb://REINPUT-CONTENT-SERVICE
           predicates:
             - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**, /insight/swagger-resources/**, /insight/swagger-config/**, /insight/webjars/**, /insight/swagger-ui.html
+          filters:
+            - RewritePath=/insight/(?<remaining>.*), /$\{remaining}
 
         - id: notification-swagger
           uri: lb://REINPUT-NOTIFICATION-SERVICE
           predicates:
             - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**, /reminder/swagger-resources/**, /reminder/swagger-config/**, /reminder/webjars/**, /reminder/swagger-ui.html
+          filters:
+            - RewritePath=/reminder/(?<remaining>.*), /$\{remaining}
 
         - id: workspace-swagger
           uri: lb://REINPUT-WORKSPACE-SERVICE
           predicates:
             - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**, /folder/swagger-resources/**, /folder/swagger-config/**, /folder/webjars/**, /folder/swagger-ui.html
+          filters:
+            - RewritePath=/folder/(?<remaining>.*), /$\{remaining}
 
         # Auth Routes (No JWT Required)
         - id: auth-routes
