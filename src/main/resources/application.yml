@@ -23,28 +23,28 @@ spring:
       routes:
         # Swagger Routes
         - id: auth-swagger
-          uri: lb://AUTH-SERVICE
+          uri: lb://REINPUT-AUTH-SERVICE
           predicates:
             - Path=/member/swagger-ui/**, /member/v3/api-docs/**
           filters:
             - StripPrefix=1
 
         - id: content-swagger
-          uri: lb://CONTENT-SERVICE
+          uri: lb://REINPUT-CONTENT-SERVICE
           predicates:
             - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**
           filters:
             - StripPrefix=1
 
         - id: notification-swagger
-          uri: lb://NOTIFICATION-SERVICE
+          uri: lb://REINPUT-NOTIFICATION-SERVICE
           predicates:
             - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**
           filters:
             - StripPrefix=1
 
         - id: workspace-swagger
-          uri: lb://WORKSPACE-SERVICE
+          uri: lb://REINPUT-WORKSPACE-SERVICE
           predicates:
             - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**
           filters:
@@ -52,39 +52,39 @@ spring:
 
         # Auth Routes (No JWT Required)
         - id: auth-routes
-          uri: lb://AUTH-SERVICE
+          uri: lb://REINPUT-AUTH-SERVICE
           predicates:
             - Path=/auth/**
 
         - id: oauth-routes
-          uri: lb://AUTH-SERVICE
+          uri: lb://REINPUT-AUTH-SERVICE
           predicates:
             - Path=/oauth2/**
 
         # Service Routes (JWT Required)
         - id: member-service
-          uri: lb://AUTH-SERVICE
+          uri: lb://REINPUT-AUTH-SERVICE
           predicates:
             - Path=/member/**
           filters:
             - name: JwtAuthenticationFilter
 
         - id: content-service
-          uri: lb://CONTENT-SERVICE
+          uri: lb://REINPUT-CONTENT-SERVICE
           predicates:
             - Path=/insight/**
           filters:
             - name: JwtAuthenticationFilter
 
         - id: notification-service
-          uri: lb://NOTIFICATION-SERVICE
+          uri: lb://REINPUT-NOTIFICATION-SERVICE
           predicates:
             - Path=/reminder/**
           filters:
             - name: JwtAuthenticationFilter
 
         - id: workspace-service
-          uri: lb://reinput-workspace-service
+          uri: lb://REINPUT-WORKSPACE-SERVICE
           predicates:
             - Path=/folder/**
           filters:
