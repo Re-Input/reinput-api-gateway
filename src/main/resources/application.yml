@@ -21,13 +21,36 @@ spring:
             allowedHeaders: "*"
             allowCredentials: true
       routes:
-        - id: member-service
+        # Swagger Routes
+        - id: auth-swagger
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/member/**
+            - Path=/member/swagger-ui/**, /member/v3/api-docs/**
           filters:
-            - name: JwtAuthenticationFilter
+            - StripPrefix=1
 
+        - id: content-swagger
+          uri: lb://CONTENT-SERVICE
+          predicates:
+            - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        - id: notification-swagger
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        - id: workspace-swagger
+          uri: lb://WORKSPACE-SERVICE
+          predicates:
+            - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+
+        # Auth Routes (No JWT Required)
         - id: auth-routes
           uri: lb://AUTH-SERVICE
           predicates:
@@ -38,12 +61,13 @@ spring:
           predicates:
             - Path=/oauth2/**
 
-        - id: auth-swagger
+        # Service Routes (JWT Required)
+        - id: member-service
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/member/swagger-ui/**, /member/v3/api-docs/**
+            - Path=/member/**
           filters:
-            - StripPrefix=1
+            - name: JwtAuthenticationFilter
 
         - id: content-service
           uri: lb://CONTENT-SERVICE
@@ -52,26 +76,12 @@ spring:
           filters:
             - name: JwtAuthenticationFilter
 
-        - id: content-swagger
-          uri: lb://CONTENT-SERVICE
-          predicates:
-            - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**
-          filters:
-            - StripPrefix=1
-
         - id: notification-service
           uri: lb://NOTIFICATION-SERVICE
           predicates:
             - Path=/reminder/**
           filters:
             - name: JwtAuthenticationFilter
-
-        - id: notification-swagger
-          uri: lb://NOTIFICATION-SERVICE
-          predicates:
-            - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**
-          filters:
-            - StripPrefix=1
 
         - id: workspace-service
           uri: lb://reinput-workspace-service
@@ -80,13 +90,6 @@ spring:
           filters:
             - name: JwtAuthenticationFilter
 
-        - id: workspace-swagger
-          uri: lb://WORKSPACE-SERVICE
-          predicates:
-            - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**
-          filters:
-            - StripPrefix=1
-
 eureka:
   client:
     register-with-eureka: true
@@ -94,8 +97,9 @@ eureka:
     service-url:
       defaultZone: http://discovery-server:8761/eureka/
   instance:
-    prefer-ip-address: true    
+    prefer-ip-address: true
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
 jwt:
   secret: CsVkVMKKUXwFbXX1ZjEOktRHXNWRoDy5sDH8t/MIO8qkQBZGF/RiX48w65FBo/11xnk45jW8TizlzLNlnC9ANQ==
 
