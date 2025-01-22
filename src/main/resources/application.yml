@@ -19,7 +19,7 @@ spring:
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
-            allowCredentials: true
+            allowCredentials: false
       routes:
         # Swagger Routes
         - id: auth-swagger
