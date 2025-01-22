@@ -25,30 +25,22 @@ spring:
         - id: auth-swagger
           uri: lb://REINPUT-AUTH-SERVICE
           predicates:
-            - Path=/member/swagger-ui/**, /member/v3/api-docs/**, /member/swagger-resources/**, /member/swagger-config/**
-          filters:
-            - StripPrefix=1
+            - Path=/member/swagger-ui/**, /member/v3/api-docs/**, /member/swagger-resources/**, /member/swagger-config/**, /member/webjars/**, /member/swagger-ui.html
 
         - id: content-swagger
           uri: lb://REINPUT-CONTENT-SERVICE
           predicates:
-            - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**, /insight/swagger-resources/**, /insight/swagger-config/**
-          filters:
-            - StripPrefix=1
+            - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**, /insight/swagger-resources/**, /insight/swagger-config/**, /insight/webjars/**, /insight/swagger-ui.html
 
         - id: notification-swagger
           uri: lb://REINPUT-NOTIFICATION-SERVICE
           predicates:
-            - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**, /reminder/swagger-resources/**, /reminder/swagger-config/**
-          filters:
-            - StripPrefix=1
+            - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**, /reminder/swagger-resources/**, /reminder/swagger-config/**, /reminder/webjars/**, /reminder/swagger-ui.html
 
         - id: workspace-swagger
           uri: lb://REINPUT-WORKSPACE-SERVICE
           predicates:
-            - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**, /folder/swagger-resources/**, /folder/swagger-config/**
-          filters:
-            - StripPrefix=1
+            - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**, /folder/swagger-resources/**, /folder/swagger-config/**, /folder/webjars/**, /folder/swagger-ui.html
 
         # Auth Routes (No JWT Required)
         - id: auth-routes
