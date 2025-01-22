@@ -25,28 +25,28 @@ spring:
         - id: auth-swagger
           uri: lb://REINPUT-AUTH-SERVICE
           predicates:
-            - Path=/member/swagger-ui/**, /member/v3/api-docs/**
+            - Path=/member/swagger-ui/**, /member/v3/api-docs/**, /member/swagger-resources/**, /member/swagger-config/**
           filters:
             - StripPrefix=1
 
         - id: content-swagger
           uri: lb://REINPUT-CONTENT-SERVICE
           predicates:
-            - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**
+            - Path=/insight/swagger-ui/**, /insight/v3/api-docs/**, /insight/swagger-resources/**, /insight/swagger-config/**
           filters:
             - StripPrefix=1
 
         - id: notification-swagger
           uri: lb://REINPUT-NOTIFICATION-SERVICE
           predicates:
-            - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**
+            - Path=/reminder/swagger-ui/**, /reminder/v3/api-docs/**, /reminder/swagger-resources/**, /reminder/swagger-config/**
           filters:
             - StripPrefix=1
 
         - id: workspace-swagger
           uri: lb://REINPUT-WORKSPACE-SERVICE
           predicates:
-            - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**
+            - Path=/folder/swagger-ui/**, /folder/v3/api-docs/**, /folder/swagger-resources/**, /folder/swagger-config/**
           filters:
             - StripPrefix=1
 
