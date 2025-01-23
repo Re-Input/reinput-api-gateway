@@ -15,8 +15,6 @@ jobs:
     with:
       image-name: reinput/api-gateway-service
       container-name: api-gateway-service
-      container-port: "8000"
-      network-type: "private"
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
