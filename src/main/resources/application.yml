@@ -99,7 +99,7 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    ip-address: api.reinput.info
+    ip-address: 13.124.232.160
 
 jwt:
   secret: CsVkVMKKUXwFbXX1ZjEOktRHXNWRoDy5sDH8t/MIO8qkQBZGF/RiX48w65FBo/11xnk45jW8TizlzLNlnC9ANQ==
